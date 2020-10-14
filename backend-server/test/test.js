@@ -51,35 +51,6 @@ describe("BlogPosts", async function () {
                     done();
                 })
         });
-
-        // Not working properly because of issues with Mocha, test manually.
-        it("should add synthetic properties to the post", async function () {
-            const user = await User.findOne().exec();
-            user.profilePictureUrl = "Author image";
-            await user.save();
-            const commentUser = await User.findOne({_id: {$ne: user._id}});
-            commentUser.profilePictureUrl = "Commenter image";
-            await commentUser.save();
-
-
-            const blogPost = new BlogPost(generateBlogPost());
-            blogPost.author_id = user._id;
-            // noinspection JSValidateTypes
-            blogPost.comments = [{author_id: commentUser._id, date: Date.now(), content: "This is a comment"}];
-            await blogPost.save();
-
-            const response = await chai.request(server)
-                .get(`/api/blogPosts/${blogPost._id}`)
-                .send();
-
-            response.body.should.have.property('author_image');
-            response.body.should.have.property('author_first_name');
-            response.body.should.have.property('author_last_name');
-            response.body.comments[0].should.have.property('author_image');
-            response.body.comments[0].should.have.property('author_first_name');
-            response.body.comments[0].should.have.property('author_last_name');
-
-        });
     });
 
     describe("POST /api/blogPosts", function () {
