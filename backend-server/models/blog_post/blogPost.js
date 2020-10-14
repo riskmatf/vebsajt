@@ -14,6 +14,16 @@ const blogPostSchema = new mongoose.Schema({
     comments: [{author_id: mongoose.Schema.Types.ObjectId, date: Date, content: String}]
 });
 
+// Before validating, generate the url-id. Save automatically invokes validation, so this also ensures that this
+// function is executed before saving the object to the database. In case the generated url-id is not unique,
+// validation will fail, because the url-id is set before the actual validation.
+blogPostSchema.pre('validate', function(next) {
+    if (!this.url_id) {
+        this.url_id = this.title.toLowerCase().replace(/\s/g, "-");
+    }
+    next();
+});
+
 blogPostSchema.methods.expanded = async function () {
     const author = await User.findById(this.author_id).exec();
 

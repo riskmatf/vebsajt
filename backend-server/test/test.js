@@ -53,7 +53,7 @@ describe("BlogPosts", async function () {
         });
 
         // Not working properly because of issues with Mocha, test manually.
-        xit("should add synthetic properties to the post", async function () {
+        it("should add synthetic properties to the post", async function () {
             const user = await User.findOne().exec();
             user.profilePictureUrl = "Author image";
             await user.save();
@@ -75,9 +75,9 @@ describe("BlogPosts", async function () {
             response.body.should.have.property('author_image');
             response.body.should.have.property('author_first_name');
             response.body.should.have.property('author_last_name');
-            response.body.comments[0].should.have.property('comment_author_image');
-            response.body.comments[0].should.have.property('comment_author_first_name');
-            response.body.comments[0].should.have.property('comment_author_last_name');
+            response.body.comments[0].should.have.property('author_image');
+            response.body.comments[0].should.have.property('author_first_name');
+            response.body.comments[0].should.have.property('author_last_name');
 
         });
     });
@@ -155,14 +155,14 @@ describe("BlogPosts", async function () {
                 })
         });
 
-/*        it("should expand the blog post with syntetic fields", async function () {
+        it("should expand the blog post with synthetic fields", async function () {
             const blogPost = new BlogPost(generateBlogPost());
             blogPost.author_id = user._id;
             await blogPost.save();
 
             chai.request(server)
-                .get(`/api/blogPosts/$`)
-        });*/
+                .get(`/api/blogPosts/${blogPost._id}`)
+        });
     });
 
     describe("PUT /api/blogPosts", function () {
@@ -282,7 +282,7 @@ describe("BlogPosts", async function () {
 
 describe("Users", function () {
 
-    describe("GET /api/profile/:id", async function () {
+    describe("GET /api/users/:id", async function () {
         it("should retrieve an user with the specified id", async function() {
 
             const user = await new User({
@@ -292,7 +292,7 @@ describe("Users", function () {
             }).save();
 
             const response = await chai.request(server)
-                .get(`/api/user/${user._id}`)
+                .get(`/api/users/${user._id}`)
 
             // noinspection JSUnresolvedFunction
             response.should.have.status(200);
@@ -303,7 +303,7 @@ describe("Users", function () {
     describe("Register with a profile picture", function () {
         it("Should store a picture", async function () {
             const registerResponse = await chai.request(server)
-                .post("/api/user/register")
+                .post("/api/users/register")
                 .field("email", "test@foo.com")
                 .field("firstName", "TestFirstName")
                 .field("lastName", "TestLastName")
@@ -321,7 +321,6 @@ describe("Users", function () {
 
             const createdUser = await User.findById(id).exec();
 
-            console.log(createdUser.profilePictureUrl);
             createdUser.should.not.be.undefined;
             createdUser.should.have.property("profilePictureUrl");
 
