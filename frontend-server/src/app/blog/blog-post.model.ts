@@ -1,17 +1,16 @@
 import { Comment } from './comments.model';
+import { UserProfile } from '../profile/user-profile.model';
 
 export interface BlogPost {
   _id: string;
   title: string;
-  author_id: string;
-  author_image: string;
-  author_first_name: string;
-  author_last_name: string;
+  author: UserProfile;
   date: Date;
-  header_image: string;
-  url_id: string;
-  desc: string;
+  headerImageFullRes: string;
+  headerImageThumbnail: string;
+  description: string;
   content: string;
+  urlId: string;
   tags: string[];
   comments: Comment[];
 }

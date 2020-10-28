@@ -15,20 +15,22 @@ describe("Database tests", async function () {
 
     describe("BlogPosts", async function () {
 
-        it("Should throw an error when the url-id is not unique", async function () {
+        it("Should throw an error when the urlId is not unique", async function () {
             const blogPost1 = new BlogPost({
                 title: "Non-unique title",
-                author_id: testUser._id,
-                header_image: "Header image",
-                desc: "Description",
+                author: testUser._id,
+                headerImageFullRes: "Full res header image",
+                headerImageThumbnail: "Thumbnail header image",
+                description: "Description",
                 content: "# Content"
             });
 
             const blogPost2 = new BlogPost({
                 title: "Non-unique title",
-                author_id: testUser._id,
-                header_image: "Header image",
-                desc: "Description",
+                author: testUser._id,
+                headerImageFullRes: "Full res header image",
+                headerImageThumbnail: "Thumbnail header image",
+                description: "Description",
                 content: "# Content"
             });
             try {
@@ -45,38 +47,40 @@ describe("Database tests", async function () {
         it("should populate the author field", async function () {
             const blogPost = new BlogPost({
                 title: "Non-unique title",
-                author_id: testUser._id,
-                header_image: "Header image",
-                desc: "Description",
+                author: testUser._id,
+                headerImageFullRes: "Full res header image",
+                headerImageThumbnail: "Thumbnail header image",
+                description: "Description",
                 content: "# Content"
             });
 
             const populatedBlogPost = await blogPost.expanded();
 
             // Check that some of the User fields are present in the object.
-            chai.assert.isDefined(populatedBlogPost.author_id.firstName);
-            chai.assert.isDefined(populatedBlogPost.author_id.lastName);
+            chai.assert.isDefined(populatedBlogPost.author.firstName);
+            chai.assert.isDefined(populatedBlogPost.author.lastName);
 
         });
 
         it("should populate the comment author data", async function () {
             const blogPost = new BlogPost({
                 title: "Non-unique title",
-                author_id: testUser._id,
-                header_image: "Header image",
-                desc: "Description",
+                author: testUser._id,
+                headerImageFullRes: "Full res header image",
+                headerImageThumbnail: "Thumbnail header image",
+                description: "Description",
                 content: "# Content",
                 comments: [
                     {
-                        author_id: testUser._id,
+                        author: testUser._id,
                     }
                 ]
             });
 
             const expandedBlogPost = await blogPost.expanded();
 
-            chai.assert.isDefined(expandedBlogPost.comments[0].author_id.firstName);
-            chai.assert.isDefined(expandedBlogPost.comments[0].author_id.lastName);
+            chai.assert.isDefined(expandedBlogPost.comments[0].author.firstName);
+            chai.assert.isDefined(expandedBlogPost.comments[0].author.lastName);
         });
     });
 });

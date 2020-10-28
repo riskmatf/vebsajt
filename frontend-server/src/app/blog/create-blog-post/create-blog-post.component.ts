@@ -5,7 +5,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { interval } from 'rxjs';
-import { BlogService } from '../blog.service';
+import { ApiError, BlogService } from '../blog.service';
 import { Router } from '@angular/router';
 
 enum StatusLevel {
@@ -60,20 +60,23 @@ export class CreateBlogPostComponent implements OnInit {
 
   constructor(private authService: AuthenticationService, private blogService: BlogService, private router: Router) { }
 
+  /*
+   Although this draft cannot have all of the blog post fields valid, it still must be projected as a blog post,
+   so that it could be used in the preview. Possible workaround to make the code cleaner could be to make the
+   preview accept the draft interface, as well.
+  */
   public draftBlogPost: BlogPost = {
     _id: '',
-    author_first_name: this.authService.getUserProfile().firstName,
-    author_id: this.authService.getUserProfile()._id,
-    author_image: this.authService.getUserProfile().profilePictureUrl,
-    author_last_name: this.authService.getUserProfile().lastName,
+    author: this.authService.getUserProfile(),
     comments: [],
     content: '',
     date: new Date(),
-    desc: '',
-    header_image: 'assets/slika_zaglavlja_22_9.png',
+    description: '',
+    headerImageFullRes: 'assets/slika_zaglavlja_22_9.png',
+    headerImageThumbnail: 'assets/slika_zaglavlja_22_9.png',
     tags: [],
     title: '',
-    url_id: ''
+    urlId: ''
   };
 
   public headerImageMimeType: string;
@@ -92,7 +95,7 @@ export class CreateBlogPostComponent implements OnInit {
 
   public checkListHeaderConditions(): ChecklistInfo {
     // If the default image is used
-    if (this.draftBlogPost.header_image.startsWith('assets')) {
+    if (this.draftBlogPost.headerImageFullRes.startsWith('assets')) {
       return new ChecklistInfo('Slika zaglavlja nije postavljena', StatusLevel.ERROR);
     }
     const ratio = this.publishCheckList.get('imageRatio').statusLevel;
@@ -116,23 +119,25 @@ export class CreateBlogPostComponent implements OnInit {
 
   public publish() {
 
-    // Avoid these fields
-    const avoid = ['_id', 'author_first_name', 'author_last_name', 'author_image',
-      'comments', 'date', 'url_id'];
+    const payload = {
+      title: this.draftBlogPost.title,
+      headerImage: this.draftBlogPost.headerImageFullRes,
+      description: this.draftBlogPost.description,
+      content: this.draftBlogPost.content,
+      tags: this.draftBlogPost.tags
+    };
 
-    const clone = Object.assign(this.draftBlogPost);
-
-    avoid.forEach(excluded => {
-      delete clone[excluded];
-    })
-
-    const response = this.blogService.createBlogPost(clone);
-    response.subscribe(async response => {
-      // TODO error handling
-      localStorage.removeItem('draft-blog-post');
-      localStorage.removeItem('header-image-mime-type');
-      await this.router.navigate(['/blog/', response.url_id]);
-    })
+    this.blogService.createBlogPost(payload)
+      .subscribe(async response => {
+        if (response === ApiError.URL_NOT_UNIQUE) {
+          // TODO handle non-unique URL
+        } else {
+          // TODO this doesn't work properly
+          localStorage.removeItem('draft-blog-post');
+          localStorage.removeItem('header-image-mime-type');
+          await this.router.navigate(['/blog/', response.urlId]);
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -142,9 +147,9 @@ export class CreateBlogPostComponent implements OnInit {
       this.draftBlogPost = JSON.parse(locallyStored);
       // Trigger checklist functions manually
       this.propertyChanged('title', this.draftBlogPost.title);
-      this.propertyChanged('desc', this.draftBlogPost.desc);
+      this.propertyChanged('desc', this.draftBlogPost.description);
       this.propertyChanged('content', this.draftBlogPost.content);
-      this.checkImageQuality(this.draftBlogPost.header_image);
+      this.checkImageQuality(this.draftBlogPost.headerImageFullRes);
     }
     // Save the draft blog post into the local storage
     interval(10000).subscribe(_ => {
@@ -152,8 +157,6 @@ export class CreateBlogPostComponent implements OnInit {
       localStorage.setItem('header-image-mime-type', this.headerImageMimeType);
     });
   }
-
-
 
   propertyChanged(property: 'title' |  'desc' | 'content', newValue: string) {
     switch (property.trim()) {
@@ -188,7 +191,7 @@ export class CreateBlogPostComponent implements OnInit {
   }
 
   setHeader(file: ReadFile) {
-    this.draftBlogPost.header_image = file.content;
+    this.draftBlogPost.headerImageFullRes = file.content;
     this.checkImageQuality(file.content);
   }
 

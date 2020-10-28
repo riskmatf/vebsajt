@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.blogService.getBlogPosts().subscribe(
       data => this.blogPosts = data.filter((post: BlogPost) => {
-        return following.includes(post.author_id);
+        return following.includes(post.author._id);
       }).reverse()
     );
   }

@@ -1,5 +1,7 @@
+import { UserProfile } from '../profile/user-profile.model';
+
 export interface Comment {
-  author_id: string;
+  author: UserProfile;
   date: Date;
   content: string;
 }
