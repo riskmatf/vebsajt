@@ -11,20 +11,20 @@
     <mat-card>
       <mat-card-title>Najskorija objava</mat-card-title>
       <div class="image">
-        <a *ngIf="latestPost" style="min-width: 100%; max-width: 100%;" [routerLink]="['/blog/' + latestPost.url_id]">
-          <img mat-card-image src="{{ latestPost.header_image }}" alt="Slika clanka">
+        <a *ngIf="latestPost" style="min-width: 100%; max-width: 100%;" [routerLink]="['/blog/' + latestPost.urlId]">
+          <img mat-card-image src="{{ latestPost.headerImageThumbnail }}" alt="Slika clanka">
         </a>
         <div class="centered">
-          <a *ngIf="latestPost" [routerLink]="['/blog/' + latestPost.url_id]">
+          <a *ngIf="latestPost" [routerLink]="['/blog/' + latestPost.urlId]">
             <mat-card-title style="padding-left: 15px; margin-bottom: 1vh !important;">{{ latestPost.title }}</mat-card-title>
           </a>
           <mat-card-content style="word-wrap: break-word; margin-left: 15px; margin-right: 15px; font-size: 16px;">
-            <p *ngIf="latestPost">{{ latestPost.desc }}</p>
+            <p *ngIf="latestPost">{{ latestPost.description }}</p>
           </mat-card-content>
           <mat-card-header>
             <div mat-card-avatar class="avatarImage">
               <a style="margin-left: 15px;" [routerLink]="['/okupljanja']">
-                <img *ngIf="latestPost" mat-card-avatar src="{{ latestPost.author_image }}" alt="Autorova slika">
+                <img *ngIf="latestPost" mat-card-avatar src="{{ latestPost.author.profilePictureUrl }}" alt="Autorova slika">
               </a>
             </div>
             <div>
@@ -47,20 +47,20 @@
     <mat-card>
       <mat-card-title>Najskorija objava</mat-card-title>
       <div class="image">
-        <a *ngIf="latestPost" style="min-width: 100%; max-width: 100%;" [routerLink]="['/blog/' + latestPost.url_id]">
-          <img mat-card-image src="{{ latestPost.header_image }}" alt="Slika clanka">
+        <a *ngIf="latestPost" style="min-width: 100%; max-width: 100%;" [routerLink]="['/blog/' + latestPost.urlId]">
+          <img mat-card-image src="{{ latestPost.headerImageThumbnail }}" alt="Slika clanka">
         </a>
         <div class="centered">
-          <a *ngIf="latestPost" [routerLink]="['/blog/' + latestPost.url_id]">
+          <a *ngIf="latestPost" [routerLink]="['/blog/' + latestPost.urlId]">
             <mat-card-title style="padding-left: 15px; margin-bottom: 1vh !important;">{{ latestPost.title }}</mat-card-title>
           </a>
           <mat-card-content style="word-wrap: break-word; margin-left: 15px; margin-right: 15px; font-size: 16px;">
-            <p *ngIf="latestPost">{{ latestPost.desc }}</p>
+            <p *ngIf="latestPost">{{ latestPost.description }}</p>
           </mat-card-content>
           <mat-card-header>
             <div mat-card-avatar class="avatarImage">
               <a style="margin-left: 15px;" [routerLink]="['/okupljanja']">
-                <img *ngIf="latestPost" mat-card-avatar src="{{ latestPost.author_image }}" alt="Autorova slika">
+                <img *ngIf="latestPost" mat-card-avatar src="{{ latestPost.author.profilePictureUrl }}" alt="Autorova slika">
               </a>
             </div>
             <div>

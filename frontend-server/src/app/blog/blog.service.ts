@@ -37,7 +37,7 @@ export class BlogService extends HttpErrorHandler {
 
   public async getBlogPostsByAuthorId(id: string) {
     return await this.blogPosts.pipe(map(
-      posts => posts.filter(post => post.author_id === id)
+      posts => posts.filter(post => post.author._id === id)
     )).toPromise();
   }
 

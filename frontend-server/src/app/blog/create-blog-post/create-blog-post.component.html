@@ -10,7 +10,7 @@
         <!-- TODO enforce character limit on the post description -->
         <mat-form-field appearance="outline" hintLabel="Opis blog objave se pojavljuje u umanjenom prikazu blog objave.">
           <mat-label>Opis</mat-label>
-          <input type="text" [(ngModel)]="draftBlogPost.desc" name="desc" (ngModelChange)="propertyChanged('desc', $event)" matInput>
+          <input type="text" [(ngModel)]="draftBlogPost.description" name="desc" (ngModelChange)="propertyChanged('desc', $event)" matInput>
         </mat-form-field>
         <mat-form-field hintLabel="Napišite do 5 oznaka koje opisuju ovu objavu." appearance="outline">
           <mat-label>Oznake</mat-label>
@@ -35,7 +35,7 @@
           <mat-list-item [class]="publishCheckList.get('imageRatio').getStatusClass()"><mat-icon>{{publishCheckList.get('imageRatio').getIconName()}}</mat-icon> {{publishCheckList.get('imageRatio').message}} </mat-list-item>
           <mat-list-item [class]="publishCheckList.get('imageResolution').getStatusClass()"> <mat-icon>{{publishCheckList.get('imageResolution').getIconName()}}</mat-icon> {{publishCheckList.get('imageResolution').message}} </mat-list-item>
         </mat-list>
-        <img [src]="draftBlogPost.header_image" style="margin-top: 30px; max-height: 50vh" *ngIf="draftBlogPost.header_image" alt="Pregled slike zaglavlja"/>
+        <img [src]="draftBlogPost.headerImageFullRes" style="margin-top: 30px; max-height: 50vh" *ngIf="draftBlogPost.headerImageFullRes" alt="Pregled slike zaglavlja"/>
       </div>
     </mat-tab>
     <mat-tab label="Tekst">

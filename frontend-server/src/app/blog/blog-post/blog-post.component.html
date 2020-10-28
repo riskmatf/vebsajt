@@ -1,18 +1,18 @@
-<div *ngIf="blogPost" class="header-image" style="background-image: url({{blogPost.header_image}})"></div>
+<div *ngIf="blogPost" class="header-image" style="background-image: url({{blogPost.headerImageFullRes}})"></div>
 
 <div *ngIf="blogPost" fxLayout="column" fxLayout.lt-lg="column" fxLayoutAlign=" center">
   <mat-card ngClass.lt-md="content-lt-md" ngClass.gt-sm="content-gt-md">
     <mat-card-title>{{blogPost.title}}</mat-card-title>
     <mat-card-header id="header">
       <div mat-card-avatar class="avatar-image">
-        <a [routerLink]="['/profil/' + blogPost.author_id]">
-          <img mat-card-avatar *ngIf="blogPost.author_image" class="author-image" src="{{blogPost.author_image}}" alt="Autorova slika">
-          <img mat-card-avatar *ngIf="!blogPost.author_image" class="author-image" src="assets/generic_user.jpeg" alt="Autorova slika">
+        <a [routerLink]="['/profil/' + blogPost.author._id]">
+          <img mat-card-avatar *ngIf="blogPost.author.profilePictureUrl" class="author-image" src="{{blogPost.author.profilePictureUrl}}" alt="Autorova slika">
+          <img mat-card-avatar *ngIf="!blogPost.author.profilePictureUrl" class="author-image" src="assets/generic_user.jpeg" alt="Autorova slika">
         </a>
       </div>
       <div>
-          <a [routerLink]="['/profil/' + blogPost.author_id]">
-            {{blogPost.author_first_name}} {{blogPost.author_last_name}}<mat-icon *ngIf="authorHasBadges()" inline="true">star</mat-icon>
+          <a [routerLink]="['/profil/' + blogPost.author._id]">
+            {{blogPost.author.firstName}} {{blogPost.author.lastName}}<mat-icon *ngIf="authorHasBadges()" inline="true">star</mat-icon>
           </a>
         <div>
           <mat-card-subtitle>{{ blogPost.date | serbianDate }}</mat-card-subtitle>
