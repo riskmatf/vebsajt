@@ -21,9 +21,8 @@ module.exports.getBlogPostById = async (req, res, next) => {
             blogPost = await BlogPost.findById(req.params.id).exec();
         }
         if (!blogPost) {
-            // Try searching by url-id instead
-            blogPost = await BlogPost.findOne({url_id: req.params.id}).exec();
-
+            // Try searching by urlId instead
+            blogPost = await BlogPost.findOne({urlId: req.params.id}).exec();
         }
         if (blogPost) {
             blogPost = await blogPost.expanded();
@@ -39,49 +38,45 @@ module.exports.getBlogPostById = async (req, res, next) => {
 
 module.exports.createBlogPost = async (req, res, next) => {
     try {
+        // noinspection JSUnresolvedVariable
         if (!req.authData) {
             res.status(401).json({
                 message: "You need to be authorized to POST a blog post"
             });
-        } else {
-            if (req.body.tags) {
-                if (!Array.isArray(req.body.tags)) {
-                    // For unknown reasons, front-end sends array as a comma-delimited string
-                    req.body.tags = req.body.tags.split(",");
-                }
-            }
-            // Don't forward the date into the new BlogPost - current date will be applied automatically
-            delete req.body.date;
-            let blogPost = new BlogPost(req.body);
-            // noinspection JSUnresolvedVariable
-            blogPost.author_id = req.authData.id;
-            const error = await blogPost.validateSync();
-            if (error) {
-                res.status(400).json({
-                    message: `Fields [${Object.keys(error.errors)}] are not correct`
-                });
-            } else {
-                blogPost.header_image = resizer.cropResize(req.body.header_image, 1920, 22, 9)
-                blogPost.title = blogPost.title.trim();
-                blogPost.url_id = blogPost.title.toLowerCase().replace(/\s/g, "-");
-                const existing = await BlogPost.findOne({url_id: blogPost.url_id}).exec();
-                if (existing) {
+            return;
+        }
+
+        let blogPost;
+        try {
+            blogPost = await BlogPost.fromRequestBody(req.body, req.authData.id);
+            try {
+                await blogPost.save();
+                const expandedBlogPost = await blogPost.expanded();
+                res.status(201).json(expandedBlogPost);
+            } catch (err) {
+                if (err.name === "MongoError" && err.code === 11000) {
                     res.status(400).json({
-                        message: "Blog post with a similar title already exists",
-                        existing: existing._id
-                    })
+                        message: "Blog post with a similar title already exists"
+                    });
+                } else if (err.name === "ValidationError") {
+                    res.status(400).json({
+                        message: `Fields [${Object.keys(err.errors)}] are not correct`
+                    });
                 } else {
-                    await blogPost.save();
-                    blogPost = await blogPost.expanded();
-                    res.status(201).json(blogPost);
+                    next(err);
                 }
             }
+        } catch (err) {
+            res.status(400).json({
+                message: err.message
+            });
         }
     } catch (err) {
         next(err);
     }
 }
 
+// FIXME should PUT be replaced with PATCH?
 module.exports.updateBlogPost = async (req, res, next) => {
     try {
         // noinspection JSUnresolvedVariable
@@ -100,7 +95,8 @@ module.exports.updateBlogPost = async (req, res, next) => {
             });
         } else {
             const blogPostFromPayload = new BlogPost(req.body);
-            const error = blogPostFromPayload.validateSync();
+            // TODO refactor this method
+            const error = false;
             if (error) {
                 res.status(400).json({
                     message: `Fields [${Object.keys(error.errors)}] are not correct`
@@ -137,7 +133,7 @@ module.exports.deleteBlogPost = async (req, res, next) => {
         } else if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             res.status(400).send();
         } else {
-            let blogPost = await BlogPost.findByIdAndRemove(req.params.id, {useFindAndModify: false}).exec();
+            let blogPost = await BlogPost.findByIdAndRemove(req.params.id).exec();
             if (blogPost) {
                 blogPost = await blogPost.expanded();
                 res.status(200).json(blogPost);
