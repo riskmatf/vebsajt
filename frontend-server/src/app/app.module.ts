@@ -23,7 +23,6 @@ import { MaterialModule } from './material/material.module';
 import { ProfileViewComponent } from './profile/profile-view/profile-view.component';
 import { ProfileBadgeComponent } from './profile/profile-badge/profile-badge.component';
 import { ProfileSettingsComponent } from './profile/profile-settings/profile-settings.component';
-import { BlogLayoutDirective } from './blog-layout.directive';
 import { RegisterComponent } from './register/register.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgxFileHelpersModule } from 'ngx-file-helpers';
@@ -54,7 +53,6 @@ import { BlogComponent } from './blog/blog/blog.component';
     ProfileBadgeComponent,
     ProfileViewComponent,
     ProfileSettingsComponent,
-    BlogLayoutDirective,
     RegisterComponent,
     InfoDialogComponent,
     RestorePasswordComponent,
