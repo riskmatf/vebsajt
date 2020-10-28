@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorHandler } from '../utils/http-error-handler.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BlogPost } from './blog-post.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, map } from 'rxjs/operators';
+
+export enum ApiError {
+  URL_NOT_UNIQUE
+}
 
 @Injectable({
   providedIn: 'root'
@@ -41,9 +45,13 @@ export class BlogService extends HttpErrorHandler {
     )).toPromise();
   }
 
-  public createBlogPost(data): Observable<BlogPost> {
+  public createBlogPost(data): Observable<BlogPost | ApiError> {
     return this.http
       .post<BlogPost>(this.blogPostsUrl, data)
-      .pipe(catchError(super.handleError()));
+      .pipe(catchError((errorResponse: HttpErrorResponse) => {
+          if (errorResponse.error.message === 'Post with a similar title already exists') {
+            return of(ApiError.URL_NOT_UNIQUE);
+          }
+      }));
   }
 }
