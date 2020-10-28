@@ -1,16 +1,13 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { Router, NavigationEnd, Event } from '@angular/router';
+import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Event, NavigationEnd, Router } from '@angular/router';
 import { ProfileService } from '../profile.service';
 import { UserProfile } from '../user-profile.model';
-import { DataService } from 'src/app/services/data.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ShowUserListComponent } from './show-user-list/show-user-list.component';
 import { BlogService } from 'src/app/blog/blog.service';
 import { BlogPost } from 'src/app/blog/blog-post.model';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { map, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-view',
@@ -18,10 +15,10 @@ import { map, shareReplay } from 'rxjs/operators';
   styleUrls: ['./profile-view.component.css', '../../app.component.css']
 })
 
-export class ProfileViewComponent implements OnInit, OnDestroy {
+export class ProfileViewComponent implements OnDestroy {
   private readonly btnTextMap = {
-    following: "Otprati",
-    follow: "Zaprati"
+    following: 'Otprati',
+    follow: 'Zaprati'
   };
 
   public profile: UserProfile;
@@ -31,7 +28,7 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   public isLtMd: boolean;
 
   constructor(private router: Router, private profileService: ProfileService,
-              private data: DataService, private auth: AuthenticationService,
+              private auth: AuthenticationService,
               private dialog: MatDialog, private blogService: BlogService) {
 
     this.findProfileById();
@@ -47,19 +44,9 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
     this.initBlogPosts();
   }
 
-  ngOnInit() {
-    this.data.changeMessage('profile-view');
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if (event.target.innerWidth < 959) {
-      this.isLtMd = true;
-      this.data.changeMessage('profile-view');
-    } else {
-      this.isLtMd = false;
-      this.data.changeMessage('profile-view');
-    }
+    this.isLtMd = event.target.innerWidth < 959;
   }
 
   private initBtnText() {
@@ -74,7 +61,7 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   }
 
   private getIdFromRoute() {
-    return this.router.url.split("/").pop();
+    return this.router.url.split('/').pop();
   }
 
   private async initBlogPosts() {

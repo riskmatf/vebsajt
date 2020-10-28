@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, map } from 'rxjs/operators';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { UserProfile } from '../profile/user-profile.model';
-import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +17,7 @@ export class AuthenticationService {
 
   public userChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private http: HttpClient, private router: Router, private data: DataService) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   private static extractUserIdFromJwtToken(token: string): string {
     const encodedPayload = token.split('.')[1];
@@ -134,7 +133,6 @@ export class AuthenticationService {
         return of(false);
       })
     );
-    this.data.changeMessage('profile-view');
 
     return observable.toPromise();
   }

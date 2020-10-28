@@ -19,8 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private blogService: BlogService,
               public meetingService: MeetingsService,
-              public auth: AuthenticationService,
-              private data: DataService) {
+              public auth: AuthenticationService) {
     this.blogService.getBlogPosts().subscribe(post => this.latestPost = post.reverse()[0]);
 
     this.initBlogPosts();
@@ -32,8 +31,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (value) this.initBlogPosts();
       }
     );
-
-    this.data.changeMessage('profile-view');
   }
 
   private initBlogPosts() {
