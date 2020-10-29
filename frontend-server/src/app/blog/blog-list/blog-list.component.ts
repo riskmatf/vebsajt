@@ -8,19 +8,12 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
   styleUrls: ['./blog-list.component.css', '../../app.component.css']
 })
 
-export class BlogListComponent implements OnInit {
+export class BlogListComponent {
   @Input()
   public blogPosts: BlogPost[];
 
   @Input()
-  public context: 'profile' | 'homepage' | 'blog';
-
-  public isProfile: boolean;
+  public layout: 'row wrap' | 'column';
 
   constructor(public auth: AuthenticationService) {}
-
-  ngOnInit(): void {
-    this.isProfile = this.context === 'profile';
-  }
-
 }

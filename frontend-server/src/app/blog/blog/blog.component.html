@@ -1,1 +1,6 @@
-<app-blog-list [blogPosts]="blogPosts" context="blog"></app-blog-list>
+<button routerLink="/blog/novo" class="extended-fab-button" style="margin-bottom: 20px" mat-fab color="primary">
+  <mat-icon>add</mat-icon>
+  <span class="extended-fab-button__text">Napiši novi članak</span>
+</button>
+
+<app-blog-list [blogPosts]="blogPosts" layout="row wrap"></app-blog-list>
