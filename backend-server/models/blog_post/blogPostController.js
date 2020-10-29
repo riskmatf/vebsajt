@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const BlogPost = require("./blogPost");
-const resizer = require("../../util/imageResizer")
 
 module.exports.getBlogPosts = async (req, res, next) => {
     try {
-        let blogPosts = await BlogPost.find().exec();
+        let blogPosts = await BlogPost.find()
+            .skip(parseInt(req.query.start))
+            .limit(parseInt(req.query.limit))
+            .exec();
         // noinspection JSUnresolvedFunction
         blogPosts = await Promise.all(blogPosts.map((post) => post.expanded()));
         res.status(200).json(blogPosts);
@@ -78,6 +80,7 @@ module.exports.createBlogPost = async (req, res, next) => {
 
 // FIXME should PUT be replaced with PATCH?
 module.exports.updateBlogPost = async (req, res, next) => {
+    // noinspection JSUnresolvedVariable
     try {
         // noinspection JSUnresolvedVariable
         if (!req.authData.id) {
@@ -98,8 +101,10 @@ module.exports.updateBlogPost = async (req, res, next) => {
             // TODO refactor this method
             const error = false;
             if (error) {
+                // noinspection JSUnresolvedVariable
+                const errorFields = Object.keys(error.errors);
                 res.status(400).json({
-                    message: `Fields [${Object.keys(error.errors)}] are not correct`
+                    message: `Fields [${errorFields}] are not correct`
                 });
             } else {
                 /* `blogPostFromPayload` cannot be simply saved to override the existing one, because it would still be

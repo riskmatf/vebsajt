@@ -77,6 +77,28 @@ describe("BlogPosts", async function () {
                     done();
                 })
         });
+
+        it('should paginate when supplied the parameters', async function () {
+
+            const limit = 2;
+            const start = 1;
+
+            await new BlogPost(generateFullBlogPost()).save();
+            await new BlogPost(generateFullBlogPost()).save();
+            await new BlogPost(generateFullBlogPost()).save();
+
+            const paginatedDbResult = await BlogPost.find().skip(start).limit(2).lean().exec();
+            const paginatedDbIds = paginatedDbResult.map(doc => doc._id.toString());
+
+            const response = await chai.request(server)
+                .get('/api/blogPosts/')
+                .query({limit, start})
+                .send();
+            chai.assert.equal(response.statusCode, 200);
+            chai.assert.isTrue(Array.isArray(response.body));
+            const paginatedIds = response.body.map(post => post._id);
+            chai.assert.deepEqual(paginatedIds, paginatedDbIds);
+        });
     });
 
     describe("POST /api/blogPosts", function () {
