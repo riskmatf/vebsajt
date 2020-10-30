@@ -43,6 +43,7 @@ export class AuthenticationService {
     this.userProfile = profile;
   }
 
+  // TODO consider making this a Observable to better handle changes
   public getUserProfile(): UserProfile {
     if (!this.userProfile) {
       this.userProfile = JSON.parse(localStorage.getItem('user-profile'));

@@ -85,6 +85,6 @@
   </div>
 
   <div fxFlex="0 1 calc(50%)" fxLayout="column">
-    <app-blog-list [blogPosts]="blogPosts" layout="column"></app-blog-list>
+    <app-blog-list [blogPosts]="followingBlogPosts$ | async" layout="column"></app-blog-list>
   </div>
 </div>

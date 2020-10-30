@@ -5,6 +5,7 @@ import { BlogPost } from './blog-post.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, map } from 'rxjs/operators';
+import { UserProfile } from '../profile/user-profile.model';
 
 export enum ApiError {
   URL_NOT_UNIQUE
@@ -31,6 +32,16 @@ export class BlogService extends HttpErrorHandler {
 
   public getBlogPosts(): Observable<BlogPost[]> {
     return this.blogPosts;
+  }
+
+  public getBlogPostsByFollowing(user: UserProfile): Observable<BlogPost[]> {
+    const following = user.following;
+
+    return this.blogPosts.pipe(
+      map(posts =>
+        posts.filter(post => following.includes(post.author._id) || user._id === post.author._id)
+      )
+    );
   }
 
   public getBlogPostById(id: string): Observable<BlogPost> {

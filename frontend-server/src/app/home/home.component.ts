@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { BlogPost } from '../blog/blog-post.model';
 import { BlogService } from '../blog/blog.service';
 import { MeetingsService } from '../meetings/meetings.service';
 import { AuthenticationService } from '../services/authentication.service';
-import { DataService } from '../services/data.service';
+import { map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -12,42 +12,27 @@ import { DataService } from '../services/data.service';
   styleUrls: ['./home.component.css', '../app.component.css']
 })
 
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
+
   public latestPost: BlogPost;
-  public blogPosts: BlogPost[] = [];
-  private subscription: Subscription;
+  public followingBlogPosts$: Observable<BlogPost[]>;
 
   constructor(private blogService: BlogService,
               public meetingService: MeetingsService,
-              public auth: AuthenticationService) {
-    this.blogService.getBlogPosts().subscribe(post => this.latestPost = post.reverse()[0]);
-
-    this.initBlogPosts();
-  }
+              public auth: AuthenticationService) { }
 
   ngOnInit(): void {
-    this.subscription = this.auth.userChanged.subscribe(
-      value => {
-        if (value) this.initBlogPosts();
-      }
-    );
-  }
 
-  private initBlogPosts() {
+    this.blogService.getBlogPosts()
+      .pipe(take(1))
+      .subscribe(posts => this.latestPost = posts[posts.length - 1]);
+
     const profile = this.auth.getUserProfile();
 
-    if (!profile) return;
-
-    const following: string[] = profile.following;
-
-    this.blogService.getBlogPosts().subscribe(
-      data => this.blogPosts = data.filter((post: BlogPost) => {
-        return following.includes(post.author._id);
-      }).reverse()
-    );
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (profile) {
+      this.followingBlogPosts$ = this.blogService.getBlogPostsByFollowing(profile).pipe(
+        map(posts => posts.reverse())
+      );
+    }
   }
 }
