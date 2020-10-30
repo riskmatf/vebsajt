@@ -1,16 +1,7 @@
-<a mat-card-image routerLink="/blog/{{blogPost.urlId}}" style="text-decoration:none">
-  <mat-card>
-    <img mat-card-image [src]="blogPost.headerImageThumbnail" alt="Slika blog objave">
-    <mat-card-header>
-      <!-- TODO What happens when the user doesn't have a profile picture?-->
-      <img mat-card-avatar src="{{blogPost.author.profilePictureUrl}}" alt="Slika autora">
-      <mat-card-title>{{blogPost.title}}</mat-card-title>
-      <mat-card-subtitle>
-        {{blogPost.author.firstName}} {{blogPost.author.lastName}} • {{blogPost.date | serbianDate}}
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>{{blogPost.description}}</p>
-    </mat-card-content>
-  </mat-card>
-</a>
+<app-card
+  routerLink="/blog/{{blogPost.urlId}}"
+  [headerImage]="blogPost.headerImageThumbnail"
+  [avatarImage]="blogPost.author.profilePictureUrl"
+  [title]="blogPost.title"
+  subtitle="{{blogPost.author.firstName}} {{blogPost.author.lastName}} • {{blogPost.date | serbianDate}}"
+  [content]="blogPost.description"></app-card>

@@ -37,6 +37,7 @@ import { TokenInterceptor } from './providers/TokenInterceptor';
 import { ChangePasswordComponent } from './profile/profile-settings/change-password/change-password.component';
 import { BlogComponent } from './blog/blog/blog.component';
 import { BlogPostCardComponent } from './blog/blog-post-card/blog-post-card.component';
+import { CardComponent } from './card/card.component';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { BlogPostCardComponent } from './blog/blog-post-card/blog-post-card.comp
     ChangePasswordComponent,
     BlogComponent,
     BlogPostCardComponent,
+    CardComponent,
   ],
   imports: [
     BrowserModule,
