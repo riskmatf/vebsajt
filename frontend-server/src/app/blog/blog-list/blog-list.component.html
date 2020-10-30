@@ -1,34 +1,3 @@
-<div appBlogLayout [fxLayout]="layout" fxLayout.xs="column" fxLayoutAlign="start space-evenly">
-  <div fxFlex="0 1 calc(33.3%)" fxFlex.sm="0 1 calc(100%)" fxFlex.md="0 1 calc(50%)" fxFlex.gt-md="0 1 calc(33.3%)"
-    *ngFor="let post of blogPosts"
-    ngStyle.lt-md="padding-right: '0px'; padding-bottom: '30px';"
-    ngStyle.gt-sm="padding-left: '15px'; padding-right: '15px'; padding-bottom: '30px';">
-    <mat-card fxFlex>
-      <a style="padding: 0 16px; display: inline-block; min-width: 100%; max-width: 100%;" [routerLink]="['/blog/' + post.urlId]">
-        <img mat-card-image src="{{ post.headerImageThumbnail }}" alt="Slika clanka" style="padding: 0; margin-bottom: 0; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-      </a>
-      <a [routerLink]="['/blog/' + post.urlId]">
-        <mat-card-title style="padding-left: 15px; padding-top: 10px; word-wrap: break-word;">{{ post.title }}</mat-card-title>
-      </a>
-      <mat-card-content style="word-wrap: break-word; margin-left: 15px; margin-right: 15px;">
-        <p>{{ post.description }}</p>
-      </mat-card-content>
-      <mat-card-header>
-        <div mat-card-avatar class="avatar-image">
-          <a style="margin-left: 15px;" [routerLink]="['/profil/' + post.author._id]">
-            <img mat-card-avatar *ngIf="post.author.profilePictureUrl" src="{{ post.author.profilePictureUrl }}" alt="Autorova slika">
-            <img mat-card-avatar *ngIf="!post.author.profilePictureUrl" src="assets/generic_user.jpeg" alt="Autorova slika">
-          </a>
-        </div>
-        <div>
-            <a [routerLink]="['/profil/' + post.author._id]">
-              {{ post.author.firstName }} {{ post.author.lastName }}
-            </a>
-          <div>
-            <mat-card-subtitle>{{ post.date | serbianDate }}</mat-card-subtitle>
-          </div>
-        </div>
-      </mat-card-header>
-    </mat-card>
-  </div>
+<div [fxLayout]="layout" fxLayout.sm="column" fxLayoutAlign="start space-evenly">
+  <app-blog-post-card fxFlex.gt-md="30%" fxFlex.md="50%" fxFlex.lt-md="100%" style="padding: 1%" *ngFor="let post of blogPosts" [blogPost]="post"></app-blog-post-card>
 </div>

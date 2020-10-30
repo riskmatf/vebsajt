@@ -36,6 +36,7 @@ import { ShowUserListComponent } from './profile/profile-view/show-user-list/sho
 import { TokenInterceptor } from './providers/TokenInterceptor';
 import { ChangePasswordComponent } from './profile/profile-settings/change-password/change-password.component';
 import { BlogComponent } from './blog/blog/blog.component';
+import { BlogPostCardComponent } from './blog/blog-post-card/blog-post-card.component';
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { BlogComponent } from './blog/blog/blog.component';
     ShowUserListComponent,
     ChangePasswordComponent,
     BlogComponent,
+    BlogPostCardComponent,
   ],
   imports: [
     BrowserModule,
