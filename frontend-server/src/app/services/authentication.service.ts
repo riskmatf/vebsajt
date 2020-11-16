@@ -15,6 +15,7 @@ export class AuthenticationService {
   private userProfile: UserProfile;
   private token: string;
 
+  // TODO change user into an observable
   public userChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private http: HttpClient, private router: Router) { }
