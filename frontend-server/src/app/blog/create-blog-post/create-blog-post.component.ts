@@ -67,7 +67,7 @@ export class CreateBlogPostComponent implements OnInit {
   */
   public draftBlogPost: BlogPost = {
     _id: '',
-    author: this.authService.getUserProfile(),
+    author: this.authService.user$.value,
     comments: [],
     content: '',
     date: new Date(),

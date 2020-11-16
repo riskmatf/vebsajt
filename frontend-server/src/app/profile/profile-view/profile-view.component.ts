@@ -50,7 +50,7 @@ export class ProfileViewComponent implements OnDestroy {
   }
 
   private initBtnText() {
-    const currentUser = this.auth.getUserProfile();
+    const currentUser = this.auth.user$.value;
     const profileId = this.getIdFromRoute();
 
     if (currentUser && currentUser.following.includes(profileId)) {
@@ -84,13 +84,13 @@ export class ProfileViewComponent implements OnDestroy {
   }
 
   public isFollowEnabled() {
-    const currentUser = this.auth.getUserProfile();
+    const currentUser = this.auth.user$.value;
 
     return currentUser && (currentUser._id !== this.profile._id);
   }
 
   public onClick() {
-    const currentUser = this.auth.getUserProfile();
+    const currentUser = this.auth.user$.value;
 
     if (currentUser.following.includes(this.profile._id)) {
       this.btnText = this.btnTextMap.follow;

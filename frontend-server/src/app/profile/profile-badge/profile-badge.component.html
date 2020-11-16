@@ -1,12 +1,12 @@
 <button id="badge-container" mat-flat-button [matMenuTriggerFor]="menu">
-  <img *ngIf="auth.getUserProfile().profilePictureUrl" [src]="auth.getUserProfile().profilePictureUrl"/>
-  <img *ngIf="!auth.getUserProfile().profilePictureUrl" src="assets/generic_user.jpeg"/>
+  <img *ngIf="(auth.user$ | async).profilePictureUrl as picture" [src]="picture"/>
+  <img *ngIf="!(auth.user$ | async).profilePictureUrl" src="assets/generic_user.jpeg"/>
   <span fxShow="true" fxHide.lt-md="true">
-    {{auth.getUserProfile().firstName}} {{auth.getUserProfile().lastName}}
+    {{(auth.user$ | async).firstName}} {{(auth.user$ | async).lastName}}
   </span>
 </button>
 <mat-menu #menu="matMenu" xPosition="before">
-  <button mat-button [routerLink]="['/profil', this.auth.getUserProfile()._id]">Otvori profil</button>
+  <button mat-button [routerLink]="['/profil', (auth.user$ | async)._id]">Otvori profil</button>
   <br>
   <button mat-button [routerLink]="['/profil/podesavanja']">Podešavanja</button>
   <br>

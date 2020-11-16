@@ -12,13 +12,12 @@ import { UserProfile } from '../profile/user-profile.model';
 export class AuthenticationService {
   private readonly usersUrl = '/api/users/';
 
-  private userProfile: UserProfile;
+  public readonly user$ = new BehaviorSubject<UserProfile>(null);
   private token: string;
 
-  // TODO change user into an observable
-  public userChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {
+    this.user$.next(JSON.parse(localStorage.getItem('user-profile')));
+  }
 
   private static extractUserIdFromJwtToken(token: string): string {
     const encodedPayload = token.split('.')[1];
@@ -41,24 +40,12 @@ export class AuthenticationService {
 
   private saveUserProfile(profile: UserProfile) {
     localStorage.setItem('user-profile', JSON.stringify(profile));
-    this.userProfile = profile;
-  }
-
-  // TODO consider making this a Observable to better handle changes
-  public getUserProfile(): UserProfile {
-    if (!this.userProfile) {
-      this.userProfile = JSON.parse(localStorage.getItem('user-profile'));
-    }
-    return this.userProfile;
-  }
-
-  public isUserAdmin(): boolean {
-    return this.userProfile.administrator;
+    this.user$.next(profile);
   }
 
   public async logout() {
     this.token = undefined;
-    this.userProfile = undefined;
+    this.user$.next(null);
     window.localStorage.removeItem('auth-token');
     window.localStorage.removeItem('user-profile');
 
@@ -66,7 +53,7 @@ export class AuthenticationService {
   }
 
   public refreshProfile() {
-    this.fetchProfile(this.userProfile._id);
+    this.fetchProfile(this.user$.value._id);
   }
 
   private fetchProfile(id: string): void {
@@ -74,7 +61,7 @@ export class AuthenticationService {
       `api/users/${id}`,
     ).subscribe((profile) => {
       this.saveUserProfile(profile);
-      this.userChanged.next(true);
+      this.user$.next(profile);
     });
   }
 
@@ -140,7 +127,7 @@ export class AuthenticationService {
   }
 
   public update(newUser: FormData): Promise<boolean> {
-    const success = this.http.put(this.usersUrl + this.userProfile._id, newUser, {observe: 'response'}).pipe(
+    const success = this.http.put(this.usersUrl + this.user$.value._id, newUser, {observe: 'response'}).pipe(
       map((response: any) => response.status === 200),
       catchError(() => {
         return of(false);
@@ -150,13 +137,13 @@ export class AuthenticationService {
   }
 
   public async followUser(id: string) {
-    const currentUserId = this.getUserProfile()._id;
+    const currentUserId = this.user$.value._id;
 
     await this.http.put(this.usersUrl + 'follow/' + id, {currentUserId}).toPromise();
   }
 
   public async unfollowUser(id: string) {
-    const currentUserId = this.getUserProfile()._id;
+    const currentUserId = this.user$.value._id;
 
     await this.http.put(this.usersUrl + 'unfollow/' + id, {currentUserId}).toPromise();
   }
@@ -192,7 +179,7 @@ export class AuthenticationService {
   }
 
   public changePassword(newPassword: string, oldPassword: string) {
-    const success = this.http.post(this.usersUrl + 'change-password/' + this.userProfile._id, {newPassword, oldPassword}, {observe: 'response'}).pipe(
+    const success = this.http.post(this.usersUrl + 'change-password/' + this.user$.value._id, {newPassword, oldPassword}, {observe: 'response'}).pipe(
       map( response => response.status === 200),
       catchError(() => {
         return of(false);

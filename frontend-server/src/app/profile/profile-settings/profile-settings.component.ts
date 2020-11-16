@@ -36,7 +36,7 @@ export class ProfileSettingsComponent implements OnInit {
   constructor(private auth: AuthenticationService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.profile = this.auth.getUserProfile();
+    this.profile = this.auth.user$.value;
 
     this.changeForm = new FormGroup({
       firstName: new FormControl(this.profile.firstName, Validators.required),

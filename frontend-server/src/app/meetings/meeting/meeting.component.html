@@ -97,10 +97,10 @@
               </a>
             </div>
           </div>
-          <a *ngIf="auth.getUserProfile() && auth.isUserAdmin() && !canEdit" mat-raised-button class="edit" (click)="setEditable()">
+          <a *ngIf="(auth.user$ | async).administrator && !canEdit" mat-raised-button class="edit" (click)="setEditable()">
             <i class="fa fa-pencil"></i> Izmeni okupljanje
           </a>
-          <a *ngIf="auth.getUserProfile() && auth.isUserAdmin() && !canEdit" mat-raised-button class="delete" (click)="onDeleteMeeting()">
+          <a *ngIf="(auth.user$ | async).administrator && !canEdit" mat-raised-button class="delete" (click)="onDeleteMeeting()">
             <i class="fa fa-trash"></i> Obriši okupljanje
           </a>
         </mat-card-actions>
@@ -143,10 +143,10 @@
             </div>
       </div>
     <div fxFlex="0 1 calc(100%)" fxLayoutAlign="center center">
-          <a *ngIf="auth.getUserProfile() && auth.isUserAdmin() && canEdit" mat-raised-button class="confirm" type="submit" [disabled]="!saveMeetingEnabled()" (click)="saveMeetingEnabled() && confirmEdit()">
+          <a *ngIf="(auth.user$ | async).administrator && canEdit" mat-raised-button class="confirm" type="submit" [disabled]="!saveMeetingEnabled()" (click)="saveMeetingEnabled() && confirmEdit()">
             <i class="fa fa-check"></i> Prihvati izmene
           </a>
-          <a *ngIf="auth.getUserProfile() && auth.isUserAdmin() && canEdit" mat-raised-button class="cancel" (click)="cancelEdit()">
+          <a *ngIf="(auth.user$ | async).administrator && canEdit" mat-raised-button class="cancel" (click)="cancelEdit()">
             <i class="fa fa-times"></i> Otkaži izmene
           </a>
       </div>
