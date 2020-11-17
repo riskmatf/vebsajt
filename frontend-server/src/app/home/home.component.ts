@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.latestPost$ = this.blogService.getBlogPosts()
+    this.latestPost$ = this.blogService.blogPosts$
       .pipe(
         take(1),
         map(posts => posts[posts.length - 1])

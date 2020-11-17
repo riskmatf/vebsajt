@@ -3,4 +3,4 @@
   <span class="extended-fab-button__text">Napiši novi članak</span>
 </button>
 
-<app-blog-list *ngIf="blogPosts$ | async as blogPosts" [blogPosts]="blogPosts" layout="row wrap"></app-blog-list>
+<app-blog-list *ngIf="blogService.blogPosts$ | async as blogPosts" [blogPosts]="blogPosts" layout="row wrap"></app-blog-list>

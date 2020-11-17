@@ -15,31 +15,23 @@ export enum ApiError {
   providedIn: 'root'
 })
 export class BlogService extends HttpErrorHandler {
-  private blogPosts: Observable<BlogPost[]>;
+  public readonly blogPosts$: Observable<BlogPost[]>;
   private readonly blogPostsUrl = '/api/blogPosts/';
 
   constructor(private http: HttpClient, router: Router) {
     super(router);
-    this.refreshBlogPosts();
+
+    this.blogPosts$ = this.http.get<BlogPost[]>(this.blogPostsUrl)
+      .pipe(
+        catchError(super.handleError())
+      );
   }
 
-  private refreshBlogPosts(): Observable<BlogPost[]> {
-    this.blogPosts = this.http
-      .get<BlogPost[]>(this.blogPostsUrl)
-      .pipe(catchError(super.handleError()));
-    return this.blogPosts;
-  }
-
-  public getBlogPosts(): Observable<BlogPost[]> {
-    return this.blogPosts;
-  }
-
+  // TODO migrate this to a backend API call.
   public getBlogPostsByFollowing(user: UserProfile): Observable<BlogPost[]> {
-    const following = user.following;
-
-    return this.blogPosts.pipe(
+    return this.blogPosts$.pipe(
       map(posts =>
-        posts.filter(post => following.includes(post.author._id) || user._id === post.author._id)
+        posts.filter(post => user.following.includes(post.author._id) || user._id === post.author._id)
       )
     );
   }
@@ -51,7 +43,7 @@ export class BlogService extends HttpErrorHandler {
   }
 
   public async getBlogPostsByAuthorId(id: string) {
-    return await this.blogPosts.pipe(map(
+    return await this.blogPosts$.pipe(map(
       posts => posts.filter(post => post.author._id === id)
     )).toPromise();
   }
