@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 const fs = require("fs");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const server = require("../main");
+const server = require("../server");
 // noinspection JSUnusedLocalSymbols
 const should = chai.should();
 chai.use(chaiHttp);

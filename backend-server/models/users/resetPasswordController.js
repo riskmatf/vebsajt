@@ -39,7 +39,7 @@ module.exports.resetPassword = async (req, res, next) => {
 
         /*
          * Add credentials as environment variables on start:
-         * EMAIL=example@gmail.com PASS=password nodemon(node) main.js
+         * EMAIL=example@gmail.com PASS=password nodemon(node) server.js
          */
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',

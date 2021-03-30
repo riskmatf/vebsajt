@@ -46,14 +46,6 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(fileMiddleware);
 
-app.use(express.static(process.cwd() + "/../frontend-server/dist/frontend-server/"))
-
-app.get("/", (req, res, next) => {
-   res.sendfile(process.cwd() + "/../frontend-server/dist/frontend-server/index.html", function (err) {
-       next(err);
-   });
-});
-
 if (!process.env.SECRET) {
     console.log("Warning: 'SECRET' environment variable is not set. Using test environment secret.");
     process.env.SECRET = "test secret";
@@ -101,12 +93,4 @@ app.use((err, req, res, _) => {
     res.status(status).send();
 });
 
-let server;
-if (process.env.NODE_ENV === "test") {
-    // Random free port is automatically assigned
-    server = app.listen();
-} else {
-    server = app.listen(80);
-}
-
-module.exports = server;
+module.exports = app;
