@@ -30,7 +30,7 @@
     "@types/mongoose": "^5.7.32",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "mocha": "^8.1.1",
+    "mocha": "^10.1.0",
     "mongodb-memory-server": "^6.6.3",
     "nodemon": "^2.0.4"
   }
